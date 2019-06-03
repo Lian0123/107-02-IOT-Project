@@ -1,0 +1,22 @@
+{
+  "name": "107-02-iot-project",
+  "version": "1.0.0",
+  "description": "107學年度第二學期物聯網期末專案",
+  "dependencies": {
+    "mqtt": "^3.0.0"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lian0123/107-02-IOT-Project.git"
+  },
+  "author": "lian0123",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lian0123/107-02-IOT-Project/issues"
+  },
+  "homepage": "https://github.com/Lian0123/107-02-IOT-Project#readme"
+}
