@@ -7,14 +7,15 @@
     <meta name="description" content="Flat UI Kit Free is a Twitter Bootstrap Framework design and Theme, this responsive framework includes a PSD and HTML version."/>
     <meta name="viewport" content="width=1000, initial-scale=1.0, maximum-scale=1.0">
 
-    <link href="http://designmodo.github.io/Flat-UI/dist/css/vendor/bootstrap.min.css" rel="stylesheet">
-    <link href="http://designmodo.github.io/Flat-UI/dist/css/flat-ui.css" rel="stylesheet">
-    <link href="http://designmodo.github.io/Flat-UI/docs/assets/css/demo.css" rel="stylesheet">
-    <link rel="shortcut icon" href="http://designmodo.github.io/Flat-UI/dist/favicon.ico">
-    <script src="./index.js"></script>
+    <script src="./vue.min.js"></script>
+    <link href="./Flat-UI-master/dist/css/vendor/bootstrap.min.css" rel="stylesheet">
+    <link href="./Flat-UI-master/dist/css/flat-ui.css" rel="stylesheet">
+    <link href="./Flat-UI-master/docs/assets/css/demo.css" rel="stylesheet">
+    <link rel="shortcut icon" href="./Flat-UI-master/dist/favicon.ico">
     
   </head>
   <body>
+    <div id="Viewer">
       <nav class="navbar navbar-expand-lg" role="navigation">
         <a class="navbar-brand" href="#">IOT-Project</a>
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse-01"></button>
@@ -27,59 +28,87 @@
       </nav>
  
     <div class="container" style="align:center;text-align:center;">
-     
+      <h4>新增裝置</h4>
+
+      <div class="col">
+      <table style="width:100%">
+        <tr>
+          <td style="width:100%;align:center;"><input id="my-input" class="form-control" type="text" v-model:value="InputDevID"></td>
+          <td style="width:100%;align:center;"><a  href="#fakelink"  class="btn btn-block btn-lg btn-primary" @click="AddNewDev()">Add</a></td>
+        </tr>
+
+      </table>
+      </div>
+
+      <h5>裝置設定</h5>
+      <table border='1' style="width:100%">
+        <tr style="background:#0B1013;color:#24936E">
+          <th>Device Name</th>
+          <th>Option</th>
+        </tr>
+
+
+        <tr v-for="(item, index) in DevList">
+          <td>{{item}}</td>
+          <td><a href="#" @click="DelDev(index)">Disconnect</a></td> 
+        </tr>
+
+      </table>
+
+
       <h4>連線設定</h4>
       <table style="width:100%">
         <tr>
-          <td  style="align:center;text-align:left;">連線至MQTT Server</td>
-          <td style="align:center;text-align:right;"><input type="checkbox" checked data-toggle="switch" name="info-square-switch" data-on-color="success" id="switch-05" />
-</td>
+          <td  style="align:center;text-align:left;">Connect To Broker</td>
+          <td style="align:center;text-align:right;"><a href="#" @click="ConnectEvent()"><input type="checkbox" data-toggle="switch" name="info-square-switch" data-on-color="success" id="switch-05" /></a></td>
         </tr>
 
       </table>
 
-      <h5>系統回傳</h5>
-      <table border='1' style="width:100%">
-        <tr style="background:#0B1013;color:#24936E">
-          <th>UID</th>
-          <th>Local</th>
-          <th>Time</th>
-          <th>Where</th>
-        </tr>
+      <div v-if="IsConnect">
+        <h5>系統回傳</h5>
+        <table border='1' style="width:100%">
+          <tr style="background:#0B1013;color:#24936E">
+            <th>UID</th>
+            <th>Location</th>
+            <th>Time</th>
+            <th>Where</th>
+          </tr>
 
-        <tr>
-          <td>0</td>
-          <td>(0,0)</td>
-          <td>0sec</td>
-          <td><a href="#">Link</a></td> 
-        </tr>
 
-      </table>
-      
-      </br></br></br>
+          <tr v-for="(item, index) in LogList">
+            <td>{{item.id}}</td>
+            <td>({{item.Local.x}},{{item.Local.y}})</td>
+            <td>{{item.counter}}sec</td>
+            <td><a href="#">Link</a></td> 
+          </tr>
 
-      <ul class="pagination-plain">
-        <li class="previous">
-          <a href="#">Previous</a>
-        </li>
-        <li>
-          <a href="#">1</a>
-        </li>
-        <li class="next">
-          <a href="#">Newer</a>
-        </li>
-      </ul>
+        </table>
+        
+        </br></br></br>
+
+        <ul class="pagination-plain">
+          <li class="previous">
+            <a href="#">Previous</a>
+          </li>
+          <li>
+            <a href="#">1</a>
+          </li>
+          <li class="next">
+            <a href="#">Newer</a>
+          </li>
+        </ul>
+      </div>
       
     </div>
-    
+  </div>
   </body>
 </html>
 
-
+    <script src="./index.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <!-- Bootstrap 4 requires Popper.js -->
     <script src="https://unpkg.com/popper.js@1.14.1/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-    <script src="http://vjs.zencdn.net/6.6.3/video.js"></script>
-    <script src="http://designmodo.github.io/Flat-UI/dist/scripts/flat-ui.js"></script>
-    <script src="http://designmodo.github.io/Flat-UI/docs/assets/js/application.js"></script>
+    <script src="./Flat-UI-master/dist/scripts/flat-ui.js"></script>
+    <script src="./Flat-UI-master/docs/assets/js/application.js"></script>
 
