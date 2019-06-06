@@ -76,11 +76,11 @@
           </tr>
 
 
-          <tr v-for="(item, index) in LogList">
+          <tr v-for="(item, index) in LogList" v-if="index > NowPage*20-21 && index < NowPage*20">
             <td>{{item.id}}</td>
             <td>({{item.Local.x}},{{item.Local.y}})</td>
-            <td>{{item.counter}}sec</td>
-            <td><a href="#">Link</a></td> 
+            <td>{{item.Time}}</td>
+            <td><a v-bind:href="item.Link" v-bind:target="index">Link</a></td> 
           </tr>
 
         </table>
@@ -89,13 +89,20 @@
 
         <ul class="pagination-plain">
           <li class="previous">
-            <a href="#">Previous</a>
+            <a href="#" @click="NowPageEvent(-1)" v-if="NowPage>1">Previous</a>
           </li>
           <li>
-            <a href="#">1</a>
+            <a v-for="n in PageSum" href="#" @click="NowPageSet(n)">
+              <span v-if="n==NowPage" style="color:rgb(0, 54, 155)">
+                  {{n}}
+              </span>
+              <span v-else>
+                  {{n}}
+              </span>
+            </a>
           </li>
           <li class="next">
-            <a href="#">Newer</a>
+            <a href="#" @click="NowPageEvent(1)" v-if="NowPage<PageSum">Newer</a>
           </li>
         </ul>
       </div>

@@ -4,6 +4,8 @@ const DeviceID      = "aa560370";                                    // Device I
 var Viewer = new Vue({
     el:"#Viewer",
     data:{
+        PageSum:     1,
+        NowPage:     1,
         IsConnect:   false,
         IsMessage:   false,
         InputDevID:  "",
@@ -54,8 +56,9 @@ var Viewer = new Vue({
                 },
                     url: "http://mcn.nutn.edu.tw:9527/api/v1/device/"+Viewer.DevList[n]+"/"+Viewer.SystemTimer,
                     success: function(data) {
-                        for(let i=0;i<data.length;i++){
-                            Viewer.LogList.push({id:data[i].macAddress,State:"正常",Local:{x:data[i].lat,y:data[i].lng},Time:data[i].Time,Link:"https://www.google.com.tw/maps/place/@"+data[i].lat+","+data[i].lng+",20z",counter:0})
+                        let TmpPageCounter = 0;
+                        for(let i=0;i<data.length;i++,TmpPageCounter++){
+                            Viewer.LogList.push({id:data[i].macAddress,State:"正常",Local:{x:data[i].lat,y:data[i].lng},Time:data[i].createTime,Link:"https://www.google.com.tw/maps/place/"+data[i].lat+","+data[i].lng+"/@"+data[i].lat+","+data[i].lng+",20z",counter:0})
                             /*
                             if(Viewer.DevList.indexOf(data[i].macAddress)==-1){
                                 Viewer.DevList.push(data[i].macAddress)
@@ -70,6 +73,7 @@ var Viewer = new Vue({
                                 
                             }*/
                         }
+                        Viewer.PageSum = Math.ceil(TmpPageCounter/20);
                         console.log(data)
                     }
                 });
@@ -112,6 +116,11 @@ var Viewer = new Vue({
         DelDev:function DelDev(data) {
             console.log(data)
             this.DevList = this.DevList.slice(0,data).concat(this.DevList.slice(data+1,this.DevList.length))
+        },
+        NowPageEvent:function NowPageEvent(GetPage){
+            this.NowPage+=GetPage;
+        },NowPageSet:function NowPageSet(GetPage){
+            this.NowPage=GetPage;
         }
         /*
 
