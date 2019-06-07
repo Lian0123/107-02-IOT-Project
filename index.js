@@ -11,7 +11,7 @@ var Viewer = new Vue({
         InputDevID:  "",
         MessageData: "",
         SystemTimer: "",
-        DataList:    [],
+        DataList:    [{id:DeviceID,State:"未連線",Local:{x:null,y:null},Time:null,Link:"#",counter:0}],
         LogList:    [],
         DevList:   [DeviceID],
     },
@@ -68,8 +68,12 @@ var Viewer = new Vue({
                         for(let i=0;i<data.length;i++,TmpPageCounter++){
                             Viewer.LogList.push({id:data[i].macAddress,State:"正常",Local:{x:data[i].lat,y:data[i].lng},Time:data[i].createTime,Link:"https://www.google.com.tw/maps/place/"+data[i].lat+","+data[i].lng+"/@"+data[i].lat+","+data[i].lng+",20z",counter:0})
                             //AT Last Data
-                            if(i==data.length-1){
-                                Viewer.DataList.push({id:data[i].macAddress,State:"正常",Local:{x:data[i].lat,y:data[i].lng},Time:data[i].createTime,Link:"https://www.google.com.tw/maps/place/"+data[i].lat+","+data[i].lng+"/@"+data[i].lat+","+data[i].lng+",20z",counter:0})
+                            if(data[i].lat!="null" && data[i].lng!="null"){
+                                let DevTester = Viewer.DevList.indexOf(data[i].macAddress);
+                                if(DevTester==-1)
+                                    Viewer.DataList.push({id:data[i].macAddress,State:"正常",Local:{x:data[i].lat,y:data[i].lng},Time:data[i].createTime,Link:"https://www.google.com.tw/maps/place/"+data[i].lat+","+data[i].lng+"/@"+data[i].lat+","+data[i].lng+",20z",counter:0})
+                                else
+                                    Viewer.DataList[DevTester] = {id:data[i].macAddress,State:"正常",Local:{x:data[i].lat,y:data[i].lng},Time:data[i].createTime,Link:"https://www.google.com.tw/maps/place/"+data[i].lat+","+data[i].lng+"/@"+data[i].lat+","+data[i].lng+",20z",counter:0}
                             }
                         }
                         Viewer.PageSum = Math.ceil(TmpPageCounter/20);
@@ -107,6 +111,7 @@ var Viewer = new Vue({
             }
             if(this.DevList.indexOf(this.InputDevID)==-1){
                 this.DevList.push(this.InputDevID);
+                this.DataList.push({id:this.InputDevID,State:"未連線",Local:{x:null,y:null},Time:null,Link:"#",counter:0});
                 this.InputDevID = "";
             }else{
                 this.AddMessageBox("該裝置已存在");
@@ -134,16 +139,20 @@ var Viewer = new Vue({
                     },
                     url: "http://mcn.nutn.edu.tw:9527/api/v1/device/"+Viewer.DevList[n]+"/"+Viewer.SystemTimer,
                     success: function(data) {
-                        if(Viewer.DataList[n].id==Viewer.DevList[n]){
-                            console.log(data.length)
-                            if(Viewer.DataList[n].Time == data[data.length-1].createTime){
-                                Viewer.DataList[n].State="無回應";
-                                Viewer.DataList[n].counter+=60;
+                        if(data[data.length-1] > 0){
+                            if(Viewer.DataList[n].id==Viewer.DevList[n]){
+                                console.log(data)
+                                if(Viewer.DataList[n].Time == data[data.length-1].createTime){
+                                    Viewer.DataList[n]={id:data[data.length-1].macAddress,State:"無回應",Local:{x:data[data.length-1].lat,y:data[data.length-1].lng},Time:data[data.length-1].createTime,Link:"https://www.google.com.tw/maps/place/"+data[data.length-1].lat+","+data[data.length-1].lng+"/@"+data[data.length-1].lat+","+data[data.length-1].lng+",20z",counter:(Viewer.DataList[n].counter+60)};
+                                }else{
+                                    Viewer.DataList[n] = {id:data[data.length-1].macAddress,State:"正常",Local:{x:data[data.length-1].lat,y:data[data.length-1].lng},Time:data[data.length-1].createTime,Link:"https://www.google.com.tw/maps/place/"+data[data.length-1].lat+","+data[data.length-1].lng+"/@"+data[data.length-1].lat+","+data[data.length-1].lng+",20z",counter:Viewer.DataList[n].counter};
+                                }
                             }else{
-                                Viewer.DataList[n] = {id:data[data.length-1].macAddress,State:"正常",Local:{x:data[data.length-1].lat,y:data[data.length-1].lng},Time:data[data.length-1].createTime,Link:"https://www.google.com.tw/maps/place/"+data[data.length-1].lat+","+data[data.length-1].lng+"/@"+data[data.length-1].lat+","+data[data.length-1].lng+",20z",counter:(Viewer.DataList[n].counter+60)}
+                                Viewer.DataList = Viewer.DataList.slice(0,n).concat(Viewer.DataList.slice(n+1,Viewer.DataList.length))
                             }
                         }else{
-                            Viewer.DataList = Viewer.DataList.slice(0,n).concat(Viewer.DataList.slice(n+1,Viewer.DataList.length))
+                            Viewer.DataList[n].State="未連線";
+                            Viewer.DataList[n].counter+=60;
                         }
                     }
                 });

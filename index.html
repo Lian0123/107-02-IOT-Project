@@ -44,12 +44,18 @@
       <table border='1' style="width:100%">
         <tr style="background:#0B1013;color:#24936E">
           <th>Device Name</th>
+          <th>State</th>
+          <th>Stop Time</th>
+          <th>Location</th>
           <th>Option</th>
         </tr>
 
 
-        <tr v-for="(item, index) in DevList">
-          <td>{{item}}</td>
+        <tr v-for="(item, index) in DataList">
+          <td>{{item.id}}</td>
+          <td>{{item.State}}</td>
+          <td>{{item.counter}}sec</td>
+          <td><a v-bind:href="item.Link" v-bind:target="index">Link</a></td> 
           <td><a href="#" @click="DelDev(index)">Disconnect</a></td> 
         </tr>
 
