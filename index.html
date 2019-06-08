@@ -4,8 +4,7 @@
     <title>107-02-IOT-Project</title>
 
     <meta charset="utf-8">
-    <meta name="description" content="Flat UI Kit Free is a Twitter Bootstrap Framework design and Theme, this responsive framework includes a PSD and HTML version."/>
-    <meta name="viewport" content="width=1000, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="./vue.min.js"></script>
     <link href="./Flat-UI-master/dist/css/vendor/bootstrap.min.css" rel="stylesheet">
@@ -22,9 +21,12 @@
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
           <ul class="nav navbar-nav mr-auto">
             <li class="active"><a href="#">監控</a></li>
-            <li><a href="#">關於</a></li>
+            <li><a href="https://github.com/Lian0123/107-02-IOT-Project" target="GitHub">關於</a></li>
           </ul>
-        </div><!-- /.navbar-collapse -->
+        </div>
+        <div>
+          連線次數：{{Vounter}}次
+        </div>
       </nav>
  
     <div class="container" style="align:center;text-align:center;">
@@ -51,10 +53,10 @@
         </tr>
 
 
-        <tr v-for="(item, index) in DataList">
+        <tr v-for="(item, index) in DataList":key="item.counter">
           <td>{{item.id}}</td>
           <td>{{item.State}}</td>
-          <td>{{item.counter}}sec</td>
+          <td v-bind:title="item.Time">{{item.counter}}sec</td>
           <td><a v-bind:href="item.Link" v-bind:target="index">Link</a></td> 
           <td><a href="#" @click="DelDev(index)">Disconnect</a></td> 
         </tr>
@@ -65,7 +67,7 @@
       <h4>連線設定</h4>
       <table style="width:100%">
         <tr>
-          <td  style="align:center;text-align:left;">Connect To Broker</td>
+          <td  style="align:center;text-align:left;">Connect To Server</td>
           <td style="align:center;text-align:right;"><a href="#" @click="ConnectEvent()"><input type="checkbox" data-toggle="switch" name="info-square-switch" data-on-color="success" id="switch-05" /></a></td>
         </tr>
 

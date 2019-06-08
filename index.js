@@ -8,23 +8,28 @@ var Viewer = new Vue({
         NowPage:     1,
         IsConnect:   false,
         IsMessage:   false,
-        InputDevID:  "",
+        InputDevID:  DeviceID,
         MessageData: "",
         SystemTimer: "",
-        DataList:    [{id:DeviceID,State:"未連線",Local:{x:null,y:null},Time:null,Link:"#",counter:0}],
+        DataList:    [],
         LogList:    [],
-        DevList:   [DeviceID],
+        DevList:   [],
+        Vounter: 0
     },
     mounted() {
         this.SystemTimer = this.GetTime();
+        this.AddNewDev();
     },
     created () {
         console.log("start")
         this.intervalId = setInterval(() => {
             console.log("Updateing")
-            if(this.IsConnect)
-                this.UpdataJson()
-        }, 60000)
+            if(this.IsConnect){
+                this.Vounter++;
+                this.UpdataJson();
+            }
+            
+        }, 5000)
     },
     methods: {
         ConnectEvent:function ConnectEvent() {
@@ -41,7 +46,10 @@ var Viewer = new Vue({
                 this.GetJson();
 
             }else{
-                this.DataList = [];
+                for(let n=0;n<this.DataList.length;n++){
+                    this.DataList[n].State = "未連線";
+                    this.DataList[n].counter = 0;
+                }
                 this.AddMessageBox("已中斷");
             }
         },
@@ -111,7 +119,7 @@ var Viewer = new Vue({
             }
             if(this.DevList.indexOf(this.InputDevID)==-1){
                 this.DevList.push(this.InputDevID);
-                this.DataList.push({id:this.InputDevID,State:"未連線",Local:{x:null,y:null},Time:null,Link:"#",counter:0});
+                this.DataList.push({id:this.InputDevID,State:"未連線",Local:{x:null,y:null},Time:"",Link:"#",counter:0});
                 this.InputDevID = "";
             }else{
                 this.AddMessageBox("該裝置已存在");
@@ -121,6 +129,7 @@ var Viewer = new Vue({
         DelDev:function DelDev(data) {
             console.log(data)
             this.DevList = this.DevList.slice(0,data).concat(this.DevList.slice(data+1,this.DevList.length))
+            this.DataList = this.DataList.slice(0,data).concat(this.DataList.slice(data+1,this.DataList.length))
         },
         NowPageEvent:function NowPageEvent(GetPage){
             this.NowPage+=GetPage;
@@ -139,13 +148,20 @@ var Viewer = new Vue({
                     },
                     url: "http://mcn.nutn.edu.tw:9527/api/v1/device/"+Viewer.DevList[n]+"/"+Viewer.SystemTimer,
                     success: function(data) {
-                        if(data[data.length-1] > 0){
+                        console.log(data)
+                        if(data.length > 0){
                             if(Viewer.DataList[n].id==Viewer.DevList[n]){
-                                console.log(data)
-                                if(Viewer.DataList[n].Time == data[data.length-1].createTime){
-                                    Viewer.DataList[n]={id:data[data.length-1].macAddress,State:"無回應",Local:{x:data[data.length-1].lat,y:data[data.length-1].lng},Time:data[data.length-1].createTime,Link:"https://www.google.com.tw/maps/place/"+data[data.length-1].lat+","+data[data.length-1].lng+"/@"+data[data.length-1].lat+","+data[data.length-1].lng+",20z",counter:(Viewer.DataList[n].counter+60)};
-                                }else{
-                                    Viewer.DataList[n] = {id:data[data.length-1].macAddress,State:"正常",Local:{x:data[data.length-1].lat,y:data[data.length-1].lng},Time:data[data.length-1].createTime,Link:"https://www.google.com.tw/maps/place/"+data[data.length-1].lat+","+data[data.length-1].lng+"/@"+data[data.length-1].lat+","+data[data.length-1].lng+",20z",counter:Viewer.DataList[n].counter};
+                                for(let i=data.length-1;i>=0;i--){
+                                    if(data[i].lat!="null" && data[i].lng!="null"){ 
+                                        if(Viewer.DataList[n].Time == data[i].createTime){
+                                            console.log("a"+data[i])
+                                            Viewer.DataList[n]={id:data[i].macAddress,State:"無回應",Local:{x:data[i].lat,y:data[i].lng},Time:data[i].createTime,Link:"https://www.google.com.tw/maps/place/"+data[i].lat+","+data[i].lng+"/@"+data[i].lat+","+data[i].lng+",20z",counter:(Viewer.DataList[n].counter+60)};
+                                        }else{//???
+                                            console.log("b"+data[i])
+                                            Viewer.DataList[n] = {id:data[i].macAddress,State:"正常",Local:{x:data[i].lat,y:data[i].lng},Time:data[i].createTime,Link:"https://www.google.com.tw/maps/place/"+data[i].lat+","+data[i].lng+"/@"+data[i].lat+","+data[i].lng+",20z",counter:Viewer.DataList[n].counter};
+                                        }
+                                        break;
+                                    }
                                 }
                             }else{
                                 Viewer.DataList = Viewer.DataList.slice(0,n).concat(Viewer.DataList.slice(n+1,Viewer.DataList.length))
@@ -157,9 +173,6 @@ var Viewer = new Vue({
                     }
                 });
             }
-        },
-        UpdateTimer:function UpdateTimer() {
-
         }
     }
     
