@@ -7,9 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="./vue.min.js"></script>
+    
     <link href="./Flat-UI-master/dist/css/vendor/bootstrap.min.css" rel="stylesheet">
-    <link href="./Flat-UI-master/dist/css/flat-ui.css" rel="stylesheet">
     <link href="./Flat-UI-master/docs/assets/css/demo.css" rel="stylesheet">
+    <link href="./Flat-UI-master/dist/css/flat-ui.css" rel="stylesheet">
+
     <link rel="shortcut icon" href="./Flat-UI-master/dist/favicon.ico">
     
   </head>
@@ -22,13 +24,18 @@
           <ul class="nav navbar-nav mr-auto">
             <li class="active"><a href="#">監控</a></li>
             <li><a href="https://github.com/Lian0123/107-02-IOT-Project" target="GitHub">關於</a></li>
+            <li><a href="#">連線次數：{{Vounter}}次</a></li>
           </ul>
         </div>
-        <div>
-          連線次數：{{Vounter}}次
+        <div class="" v-if="IsMessage" class="ts active snackbar">
+            <ul class="nav  navbar-nav mr-auto">
+              <li><a a href="#">{{MessageData}}</a></li>
+            </ul>
         </div>
       </nav>
- 
+
+      
+
     <div class="container" style="align:center;text-align:center;">
       <h4>新增裝置</h4>
 

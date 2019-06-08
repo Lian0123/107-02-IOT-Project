@@ -7,9 +7,9 @@ var Viewer = new Vue({
         PageSum:     1,
         NowPage:     1,
         IsConnect:   false,
-        IsMessage:   false,
+        IsMessage:   true,
         InputDevID:  DeviceID,
-        MessageData: "",
+        MessageData: "準備中",
         SystemTimer: "",
         DataList:    [],
         LogList:    [],
@@ -21,15 +21,13 @@ var Viewer = new Vue({
         this.AddNewDev();
     },
     created () {
-        console.log("start")
         this.intervalId = setInterval(() => {
-            console.log("Updateing")
             if(this.IsConnect){
                 this.Vounter++;
                 this.UpdataJson();
             }
             
-        }, 5000)
+        }, 60000)
     },
     methods: {
         ConnectEvent:function ConnectEvent() {
@@ -85,13 +83,12 @@ var Viewer = new Vue({
                             }
                         }
                         Viewer.PageSum = Math.ceil(TmpPageCounter/20);
-                        console.log(data)
+                        Viewer.AddMessageBox("已連線");
                     }
                 });
             }
         },
         GetTime:function GetTime() {
-            return "2019-06-06 ";
             let TmpDate = new Date;
             if(String(TmpDate.getMonth()+1).length == 1 ){
                 if(String(TmpDate.getDate()).length == 1 ){
@@ -127,7 +124,6 @@ var Viewer = new Vue({
             
         },
         DelDev:function DelDev(data) {
-            console.log(data)
             this.DevList = this.DevList.slice(0,data).concat(this.DevList.slice(data+1,this.DevList.length))
             this.DataList = this.DataList.slice(0,data).concat(this.DataList.slice(data+1,this.DataList.length))
         },
@@ -148,16 +144,13 @@ var Viewer = new Vue({
                     },
                     url: "http://mcn.nutn.edu.tw:9527/api/v1/device/"+Viewer.DevList[n]+"/"+Viewer.SystemTimer,
                     success: function(data) {
-                        console.log(data)
                         if(data.length > 0){
                             if(Viewer.DataList[n].id==Viewer.DevList[n]){
                                 for(let i=data.length-1;i>=0;i--){
                                     if(data[i].lat!="null" && data[i].lng!="null"){ 
                                         if(Viewer.DataList[n].Time == data[i].createTime){
-                                            console.log("a"+data[i])
                                             Viewer.DataList[n]={id:data[i].macAddress,State:"無回應",Local:{x:data[i].lat,y:data[i].lng},Time:data[i].createTime,Link:"https://www.google.com.tw/maps/place/"+data[i].lat+","+data[i].lng+"/@"+data[i].lat+","+data[i].lng+",20z",counter:(Viewer.DataList[n].counter+60)};
-                                        }else{//???
-                                            console.log("b"+data[i])
+                                        }else{
                                             Viewer.DataList[n] = {id:data[i].macAddress,State:"正常",Local:{x:data[i].lat,y:data[i].lng},Time:data[i].createTime,Link:"https://www.google.com.tw/maps/place/"+data[i].lat+","+data[i].lng+"/@"+data[i].lat+","+data[i].lng+",20z",counter:Viewer.DataList[n].counter};
                                         }
                                         break;
@@ -173,6 +166,7 @@ var Viewer = new Vue({
                     }
                 });
             }
+            Viewer.AddMessageBox("已更新");
         }
     }
     
