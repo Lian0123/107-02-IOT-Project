@@ -80,6 +80,7 @@ var Viewer = new Vue({
             }
         },
         GetTime:function GetTime() {
+            return "2019-06-06";
             let TmpDate = new Date;
             if(String(TmpDate.getMonth()+1).length == 1 ){
                 if(String(TmpDate.getDate()).length == 1 ){
