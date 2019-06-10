@@ -85,7 +85,7 @@ var Viewer = new Vue({
                 if(String(TmpDate.getDate()).length == 1 ){
                     return TmpDate.getFullYear() + "-0" + (TmpDate.getMonth()+1) + '-0' + TmpDate.getDate() + ' ';
                 }else{
-                    return TmpDate.getFullYear() + "-0" + (TmpDate.getMonth()+1) + '-0' + TmpDate.getDate() + ' ';
+                    return TmpDate.getFullYear() + "-0" + (TmpDate.getMonth()+1) + '-' + TmpDate.getDate() + ' ';
                 }
             }else{
                 if(String(TmpDate.getDate()).length == 1 ){
